@@ -21,7 +21,12 @@ set(STM32MP2_LP_CUBE_HAL ${STM32MP2_LP_CUBE_PATH}/Drivers/STM32MP2xx_HAL_Driver)
 
 target_sources(${STM32MP2_LP_TARGET}
 	PRIVATE
-
+		${STM32MP2_LP_SRC_DIR}/startup_stm32mp2xx_m33.S
+		${STM32MP2_LP_SRC_DIR}/main.c
+		${STM32MP2_LP_SRC_DIR}/syscalls.c
+		${STM32MP2_LP_SRC_DIR}/stm32mp2xx_it.c
+		${STM32MP2_LP_SRC_DIR}/system_stm32mp2xx.c
+		${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal.c
 )
 
 target_link_options(${STM32MP2_LP_TARGET}

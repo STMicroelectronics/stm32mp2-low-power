@@ -1,0 +1,10 @@
+# List of files and extensions to be ignored
+
+#output files
+CMakeCache.txt
+Makefile
+_deps/
+CMakeFiles/
+bin/
+stm32cube/
+cmake_install.cmake
