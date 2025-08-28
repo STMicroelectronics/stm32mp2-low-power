@@ -41,13 +41,13 @@
 /* #define HAL_DCACHE_MODULE_ENABLED    */
 /* #define HAL_DCMI_MODULE_ENABLED      */
 /* #define HAL_DCMIPP_MODULE_ENABLED    */
-/* #define HAL_DDR_MODULE_ENABLED       */
+#define HAL_DDR_MODULE_ENABLED
 /* #define HAL_DMA_MODULE_ENABLED       */
 /* #define HAL_DSI_MODULE_ENABLED       */
 /* #define HAL_ETH_MODULE_ENABLED       */
 /* #define HAL_EXTI_MODULE_ENABLED      */
 /* #define HAL_FDCAN_MODULE_ENABLED     */
-/* #define HAL_GPIO_MODULE_ENABLED      */
+#define HAL_GPIO_MODULE_ENABLED
 /* #define HAL_HSEM_MODULE_ENABLED      */
 /* #define HAL_HASH_MODULE_ENABLED      */
 /* #define HAL_I2C_MODULE_ENABLED       */
@@ -69,7 +69,7 @@
 /* #define HAL_PCD_MODULE_ENABLED       */
 /* #define HAL_PKA_MODULE_ENABLED       */
 /* #define HAL_PSSI_MODULE_ENABLED      */
-/* #define HAL_PWR_MODULE_ENABLED       */
+#define HAL_PWR_MODULE_ENABLED
 /* #define HAL_RAMCFG_MODULE_ENABLED    */
 #define HAL_RCC_MODULE_ENABLED
 /* #define HAL_RIF_MODULE_ENABLED       */

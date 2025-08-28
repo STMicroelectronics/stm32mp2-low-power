@@ -12,6 +12,10 @@ set(STM32MP2_LP_CUBE_GIT_REMOTE "https://github.com/STMicroelectronics/STM32Cube
 set(STM32MP2_LP_CUBE_VERSION    "v1.2.0"          CACHE STRING  "version of stm32cubemp2 package")
 set(STM32MP2_LP_CUBE_PATH       "download"        CACHE PATH  "Path to stm32cubemp2 (or DOWNLOAD to fetch automatically)")
 
+#DDRFW Util repository
+set(STM32MP2_LP_DDRFW_UTIL_GIT_REMOTE "https://github.com/STMicroelectronics/STM32DDRFW-UTIL.git" CACHE STRING "URL (or path) to retrieve stm32ddr fw util package")
+set(STM32MP2_LP_DDRFW_UTIL_VERSION    "1.3.0"          CACHE STRING  "version of stm32ddr fw util package")
+set(STM32MP2_LP_DDRFW_UTIL_PATH       "download"       CACHE PATH    "Path to stm32cubemp2 (or DOWNLOAD to fetch automatically)")
 set(STM32MP2_LP_SOC             "STM32MP257Fxx"   CACHE STRING  "define soc family used")
 set(STM32MP2_LP_TARGET          stm32mp2_lp_fw    CACHE STRING  "target name of stm32mp2 low power")
 

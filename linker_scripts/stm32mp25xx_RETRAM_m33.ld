@@ -120,6 +120,11 @@ SECTIONS
 
   __etext = .;
 
+  .FWDDR : {
+      FW_DDR_START = .;
+      KEEP(*stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.o (.data))
+  } > TEXT
+
   .data :
   {
     __data_start__ = .;
@@ -153,6 +158,11 @@ SECTIONS
 
     KEEP(*(.jcr*))
     . = ALIGN(4);
+  } > DATA
+
+  .uninit_data :
+  {
+      KEEP(*(.uninit_data))
   } > DATA
 
   .bss :
