@@ -18,7 +18,7 @@ set(STM32MP2_LP_TARGET		stm32mp2_lp_fw			CACHE STRING	"target name of stm32mp2 l
 #output
 set(STM32MP2_LP_OUT_DIR		${CMAKE_CURRENT_BINARY_DIR}/bin CACHE PATH	"stm32mp2 low power output dir")
 set(STM32MP2_LP_OUT_BIN		${STM32MP2_LP_TARGET}.bin	CACHE PATH	"stm32mp2 low power output binary")
-set(STM32MP2_LP_OUT_MAP		${STM32MP2_LP_TARGET}.map	CACHE PATH	"stm32mp2 low power output binary")
+set(STM32MP2_LP_OUT_MAP		${STM32MP2_LP_TARGET}.map	CACHE PATH	"stm32mp2 low power output map")
 
 #internal organization
 set(STM32MP2_LP_SRC_DIR		${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -28,3 +28,4 @@ set(STM32MP2_LL_LD_DIR		${CMAKE_CURRENT_SOURCE_DIR}/linker_scripts)
 #internal var
 set(STM32MP2_LP_CORE		CORE_CM33)
 set(STM32MP2_LL_LD_SCRIPT	${STM32MP2_LL_LD_DIR}/stm32mp25xx_RETRAM_m33.ld)
+set(STM32MP2_LP_SHARED_DATA 	0x0e090000)

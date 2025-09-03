@@ -16,9 +16,16 @@
   ******************************************************************************
   */
 
-#include <stdint.h>
+#include "stm32mp2_lp_fw_api.h"
+
+void platform_init()
+{
+	if( ! stm32mp2_lp_fw_check_data_valid())
+		while(true);
+}
 
 int main(void)
 {
-    return -1;
+	platform_init();
+	return -1;
 }

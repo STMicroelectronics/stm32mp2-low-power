@@ -29,14 +29,14 @@ MEMORY
 {
   m_text (rx)       : ORIGIN = ORIGIN(RETRAM_APP),                                                     LENGTH = 32K
   m_data (rwx)      : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text),                                    LENGTH = 16K
-  m_stack (rwx)     : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data),                   LENGTH = 12K
-  m_retreg (rwx)    : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data) + LENGTH(m_stack), LENGTH = 4K
+  m_stack (rwx)     : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data),                   LENGTH = 16K
+  m_remaining (rwx) : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data)+ LENGTH(m_stack),  LENGTH = 56K
 }
 
 REGION_ALIAS("TEXT", m_text);
 REGION_ALIAS("DATA", m_data);
 REGION_ALIAS("STACK", m_stack);
-REGION_ALIAS("RETREG", m_retreg);
+REGION_ALIAS("REMAINING", m_remaining);
 
 /* Library configurations */
 GROUP(libgcc.a libc.a libm.a libnosys.a)
@@ -155,13 +155,6 @@ SECTIONS
     . = ALIGN(4);
   } > DATA
 
-  .persistent_data :
-  {
-    __persistent_data_start__ = .;
-    KEEP(*(.persistent_data*))
-    __persistent_data_end__ = .;
-  } > DATA
-
   .bss :
   {
     . = ALIGN(4);
@@ -197,4 +190,10 @@ SECTIONS
 
   /* Check if data + heap + stack exceeds RAM limit */
   ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
+
+  /* Remaining memory at end of RETRAM, not reserved for firmware execution */
+  .shared_data_section :
+  {
+    KEEP(*(.shared_data_section))
+  } > REMAINING
 }
