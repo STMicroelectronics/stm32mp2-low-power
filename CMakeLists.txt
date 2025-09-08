@@ -57,7 +57,14 @@ set_target_properties(${STM32MP2_LP_TARGET}
 )
 
 # Execute post-build to print size, and create hex and bin
-add_custom_command(TARGET ${STM32MP2_LP_TARGET} POST_BUILD
+add_custom_command(
+	OUTPUT ${STM32MP2_LP_OUT_DIR}/${STM32MP2_LP_OUT_BIN}
+	DEPENDS ${STM32MP2_LP_TARGET}
 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${STM32MP2_LP_TARGET}>
 	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${STM32MP2_LP_TARGET}> ${STM32MP2_LP_OUT_DIR}/${STM32MP2_LP_OUT_BIN}
+	COMMENT "generate low power firmware binary"
+)
+
+add_custom_target(${STM32MP2_LP_TARGET}_bin ALL
+    DEPENDS ${STM32MP2_LP_OUT_DIR}/${STM32MP2_LP_OUT_BIN}
 )
