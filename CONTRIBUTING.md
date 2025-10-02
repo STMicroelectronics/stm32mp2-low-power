@@ -1,4 +1,4 @@
-﻿# Contributing guide
+# Contributing guide
 
 This document serves as a checklist before contributing to this repository. It includes links to read up on if topics are unclear to you.
 
