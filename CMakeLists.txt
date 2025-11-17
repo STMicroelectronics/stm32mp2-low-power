@@ -15,6 +15,12 @@ include(stm32cube)
 #-------------------------------------------------------------------------------
 project(${STM32MP2_LP_TARGET} C ASM)
 
+# Default build type (RelWithDebInfo)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
+  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
+endif()
+
 add_executable(${STM32MP2_LP_TARGET})
 
 set(STM32MP2_LP_CUBE_HAL ${STM32MP2_LP_CUBE_PATH}/Drivers/STM32MP2xx_HAL_Driver)
