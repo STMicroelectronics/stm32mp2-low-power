@@ -12,6 +12,7 @@ include(config_base)
 include(${STM32MP2_LP_TOOLCHAIN_FILE})
 include(stm32cube)
 include(stm32ddrfw_util)
+include(stm32mp2_lp_version)
 
 message(STATUS "STM32_SOC_NAME          : ${STM32_SOC_NAME}")
 message(STATUS "STM32_DDR_TYPE          : ${STM32_DDR_TYPE}")
@@ -85,10 +86,15 @@ target_link_options(${STM32MP2_LP_TARGET}
     -Wl,--no-warn-rwx-segments
 )
 
+# Generate version
+configure_file(${STM32MP2_LP_INC_DIR}/version.h.in
+               ${CMAKE_BINARY_DIR}/generated/include/version.h)
+
 target_include_directories(${STM32MP2_LP_TARGET}
   PRIVATE
     ${STM32MP2_LP_INC_DIR}
     ${STM32MP2_LP_INC_API_DIR}
+    ${CMAKE_BINARY_DIR}/generated/include
 )
 
 target_compile_definitions(${STM32MP2_LP_TARGET}

@@ -1,0 +1,17 @@
+/*
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#ifndef __VERSION_H__
+#define __VERSION_H__
+
+#cmakedefine STM32MP2_LP_VERSION        "@STM32MP2_LP_VERSION@"
+#cmakedefine STM32MP2_LP_VERSION_FULL   "@STM32MP2_LP_VERSION_FULL@"
+
+#define VERSTR(x)          #x
+#define VERCON(x)          VERSTR(x)
+
+#define VERSION_STR        VERCON(STM32MP2_LP_VERSION)
+#define VERSION_FULLSTR    VERCON(STM32MP2_LP_VERSION_FULL)
+
+#endif /* __STM32MP2_LP_VERSION_H__ */

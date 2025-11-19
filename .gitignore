@@ -8,3 +8,4 @@ CMakeFiles/
 bin/
 stm32cube/
 cmake_install.cmake
+generated/include/version.h
