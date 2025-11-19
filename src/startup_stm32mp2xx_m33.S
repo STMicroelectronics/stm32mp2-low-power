@@ -476,7 +476,7 @@ Reset_Handler:
   // As we restore the stack, we get access to those values
   ldr     r0, =__Vectors   // Load the address of the vector table
   ldr     sp, [r0]         // Load the initial SP value from the vector table
-  sub     sp, sp, #40       // Sub 10 words to sp (previously saved sp and lr and 8 calle saved registers)
+  sub     sp, sp, #40      // Sub 10 words to sp (previously saved sp and lr and 8 saved registers)
   b .end_of_no_sp_and_lr_backup_needed
 
 .end_of_no_sp_and_lr_backup_needed:

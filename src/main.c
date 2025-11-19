@@ -31,25 +31,22 @@
 #define RIF_CID1	0x1
 #define RIF_CID2	0x2
 
-uint8_t retreg[4096]  __attribute__((section(".uninit_data")));
+uint8_t retreg[4096]  __section(".uninit_data");
 
-struct
-{
+struct {
 	uint32_t CR;
 	uint32_t IACR;
 	RISAF_Illegal_TypeDef IAR[2];
 	RISAF_Region_TypeDef REG[15];
-} ddr_risaf_cfg  __attribute__((section(".uninit_data")));
+} ddr_risaf_cfg  __section(".uninit_data");
 
-struct
-{
+struct {
 	uint32_t ISER[16U];
 	uint32_t ITNS[16U];
 	uint8_t  IPR[496U];
-} nvic_cfg  __attribute__((section(".uninit_data")));
+} nvic_cfg  __section(".uninit_data");
 
-struct
-{
+struct {
 	uint32_t ICSR;
 	uint32_t VTOR;
 	uint32_t AIRCR;
@@ -60,7 +57,7 @@ struct
 	uint32_t CFSR;
 	uint32_t HFSR;
 	uint32_t DFSR;
-} scb_cfg  __attribute__((section(".uninit_data")));
+} scb_cfg  __section(".uninit_data");
 
 /* low level LibC access for project */
 int io_putchar(int ch)
@@ -98,11 +95,10 @@ static void save_RISAF4(void)
 	ddr_risaf_cfg.CR = READ_REG(RISAF4->CR);
 	ddr_risaf_cfg.IACR = READ_REG(RISAF4->IACR);
 
-	for(int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 		ddr_risaf_cfg.IAR[i] = READ_REG(RISAF4->IAR[i]);
 
-	for(int i = 0; i < 15; i++)
-	{
+	for (int i = 0; i < 15; i++) {
 		ddr_risaf_cfg.REG[i].CFGR    = READ_REG(RISAF4->REG[i].CFGR);
 		ddr_risaf_cfg.REG[i].STARTR  = READ_REG(RISAF4->REG[i].STARTR);
 		ddr_risaf_cfg.REG[i].ENDR    = READ_REG(RISAF4->REG[i].ENDR);
@@ -120,14 +116,13 @@ static void save_RISAF4(void)
 
 static void restore_RISAF4(void)
 {
-	uint32_t* mkey;
+	uint32_t *mkey;
 	size_t size;
 
-	for(int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 		WRITE_REG(RISAF4->IAR[i], ddr_risaf_cfg.IAR[i]);
 
-	for(int i = 0; i < 15; i++)
-	{
+	for (int i = 0; i < 15; i++) {
 		WRITE_REG(RISAF4->REG[i].STARTR,  ddr_risaf_cfg.REG[i].STARTR);
 		WRITE_REG(RISAF4->REG[i].ENDR,    ddr_risaf_cfg.REG[i].ENDR);
 		WRITE_REG(RISAF4->REG[i].CIDCFGR, ddr_risaf_cfg.REG[i].CIDCFGR);
@@ -144,12 +139,13 @@ static void restore_RISAF4(void)
 		WRITE_REG(RISAF4->REG[i].CFGR, ddr_risaf_cfg.REG[i].CFGR);
 	}
 
-	stm32mp2_lp_fw_get_mkey((uint8_t**)&mkey, &size);
+	stm32mp2_lp_fw_get_mkey((uint8_t **)&mkey, &size);
 
-	for(int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 		WRITE_REG(RISAF4->KEYR[i], mkey[i]);
 
-	while(!(RISAF4->SR & RISAF_SR_KEYVALID));
+	while (!(RISAF4->SR & RISAF_SR_KEYVALID))
+		;
 
 	WRITE_REG(RISAF4->CR, ddr_risaf_cfg.CR);
 	WRITE_REG(RISAF4->IACR, ddr_risaf_cfg.IACR);
@@ -157,31 +153,30 @@ static void restore_RISAF4(void)
 
 static void save_nvic_cfg(void)
 {
-	for(int i = 0; i < 16; i++)
-	{
+	for (int i = 0; i < 16; i++) {
 		nvic_cfg.ISER[i] = READ_REG(NVIC->ISER[i]);
 		nvic_cfg.ITNS[i] = READ_REG(NVIC->ITNS[i]);
 	}
 
-	for(int i = 0; i < 496; i++)
+	for (int i = 0; i < 496; i++)
 		nvic_cfg.IPR[i] = READ_REG(NVIC->IPR[i]);
 }
 
 static void restore_nvic_cfg(void)
 {
-	for(int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i++)
 		WRITE_REG(NVIC->ITNS[i], nvic_cfg.ITNS[i]);
 
-	for(int i = 0; i < 496; i++)
+	for (int i = 0; i < 496; i++)
 		WRITE_REG(NVIC->IPR[i], nvic_cfg.IPR[i]);
 
-	for(int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i++)
 		WRITE_REG(NVIC->ISER[i], nvic_cfg.ISER[i]);
 }
 
 static void save_scb_cfg(void)
 {
-	for(int i = 0; i < 12; i++)
+	for (int i = 0; i < 12; i++)
 		scb_cfg.SHPR[i] = READ_REG(SCB->SHPR[i]);
 
 	scb_cfg.ICSR  = READ_REG(SCB->ICSR);
@@ -197,7 +192,7 @@ static void save_scb_cfg(void)
 
 static void restore_scb_cfg(void)
 {
-	for(int i = 0; i < 12; i++)
+	for (int i = 0; i < 12; i++)
 		scb_cfg.SHPR[i] = READ_REG(SCB->SHPR[i]);
 
 	WRITE_REG(SCB->ICSR,  scb_cfg.ICSR);
@@ -216,7 +211,7 @@ static void ddr_init(bool wakeup_from_standby, bool pmic_init)
 	/* Init DDR */
 	static DDR_InitTypeDef DDR_InitStructure;
 
-	if(wakeup_from_standby) {
+	if (wakeup_from_standby) {
 		HAL_DDR_SR_SetMode(HAL_DDR_SW_SELF_REFRESH_MODE);
 		DDR_InitStructure.wakeup_from_standby = true;
 		DDR_InitStructure.self_refresh = true;
@@ -231,7 +226,8 @@ static void ddr_init(bool wakeup_from_standby, bool pmic_init)
 	HAL_DDR_Init(&DDR_InitStructure);
 }
 
-static void SystemClock_Config(void) {
+static void SystemClock_Config(void)
+{
 	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
 
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSE;
@@ -296,7 +292,8 @@ int main(void)
 	uint32_t lpmode;
 
 	HAL_DDR_SetRetentionAreaBase((intptr_t) &retreg);
-	if(!stm32mp2_lp_fw_check_data_valid())
+
+	if (!stm32mp2_lp_fw_check_data_valid())
 		Error_Handler();
 
 	if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET) {
@@ -337,7 +334,7 @@ int main(void)
 			/* Disable DDRSHR to avoid STOP/STANDBY exit issue */
 			CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 
-			switch(stm32mp2_lp_fw_get_lpmode()) {
+			switch (stm32mp2_lp_fw_get_lpmode()) {
 			case STM32MP2_LP_FW_LPMODE_STOP2:
 				lpmode = PWR_REGULATOR_LP_OFF;
 				break;

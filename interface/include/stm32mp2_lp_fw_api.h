@@ -41,16 +41,16 @@ typedef enum stm32mp2_lp_fw_suspend_mode_e {
 } stm32mp2_lp_fw_suspend_mode_t;
 
 //Returns the lpmode desired for this lowpower request
-stm32mp2_lp_fw_suspend_mode_t stm32mp2_lp_fw_get_lpmode();
+stm32mp2_lp_fw_suspend_mode_t stm32mp2_lp_fw_get_lpmode(void);
 
 //set the lpmode desired for this lowpower request
 void stm32mp2_lp_fw_set_lpmode(stm32mp2_lp_fw_suspend_mode_t lpmode);
 
 //set the magic within the sahred data struct to ensure that the data are ready to use
-void stm32mp2_lp_fw_mark_data_valid();
+void stm32mp2_lp_fw_mark_data_valid(void);
 
 //test the magic within the shared data struct to ensure that the data are ready to use
-bool stm32mp2_lp_fw_check_data_valid();
+bool stm32mp2_lp_fw_check_data_valid(void);
 
 //in case of error the size would be set to 0 and *mkey = NULL
 //in case of success the size would be set to the mkey szie and *mkey = uint8_t mkey[size];
