@@ -35,6 +35,9 @@ set(STM32MP2_LP_SRC_DIR         ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(STM32MP2_LP_INC_DIR         ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(STM32MP2_LP_LD_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/linker_scripts)
 
+#configuration
+set(STM32MP2_LP_HALT_ON_ERROR   OFF               CACHE BOOL    "On fatal errors in the firmware, halt instead of rebooting.")
+
 #internal var
 set(STM32MP2_LP_LD_SCRIPT       ${STM32MP2_LP_LD_DIR}/stm32mp2xx_RETRAM_m33.ld)
 

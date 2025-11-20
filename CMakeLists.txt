@@ -99,6 +99,7 @@ target_compile_definitions(${STM32MP2_LP_TARGET}
     CORE_CM33
     STM32_M33TDCID
     # flag for HAL DDR driver configuration
+    $<$<BOOL:${STM32MP2_LP_HALT_ON_ERROR}>:STM32MP2_LP_HALT_ON_ERROR>
     STM32MP_DDR_DUAL_AXI_PORT
     DDR_FREQ=${STM32_DDR_FREQ_Mhz}
     DDR_SIZE_Gb=${STM32_DDR_SIZE_Gb}

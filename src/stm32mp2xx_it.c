@@ -20,6 +20,8 @@
 
 #include <stm32mp2xx_hal.h>
 
+#include <main.h>
+
 /**
 * @brief   This function handles NMI exception.
 * @param  None
@@ -27,9 +29,7 @@
 */
 void NMI_Handler(void)
 {
-  while (1)
-  {
-  }
+	Error_Handler();
 }
 
 /**
@@ -39,10 +39,8 @@ void NMI_Handler(void)
 */
 void HardFault_Handler(void)
 {
-  /* Go to infinite loop when Secure Fault exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Secure Fault exception occurs */
+	Error_Handler();
 }
 
 /**
@@ -52,10 +50,8 @@ void HardFault_Handler(void)
   */
 void SecureFault_Handler(void)
 {
-  /* Go to infinite loop when Secure Fault exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Secure Fault exception occurs */
+	Error_Handler();
 }
 
 /**
@@ -65,10 +61,8 @@ void SecureFault_Handler(void)
 */
 void MemManage_Handler(void)
 {
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Memory Manage exception occurs */
+	Error_Handler();
 }
 
 /**
@@ -78,10 +72,8 @@ void MemManage_Handler(void)
 */
 void BusFault_Handler(void)
 {
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Bus Fault exception occurs */
+	Error_Handler();
 }
 
 /**
@@ -91,10 +83,8 @@ void BusFault_Handler(void)
 */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Usage Fault exception occurs */
+	Error_Handler();
 }
 
 /**
@@ -104,9 +94,7 @@ void UsageFault_Handler(void)
 */
 void DebugMon_Handler(void)
 {
-   while (1)
-  {
-  }
+	Error_Handler();
 }
 
 /**
@@ -116,9 +104,7 @@ void DebugMon_Handler(void)
 */
 void PendSV_Handler(void)
 {
-   while (1)
-  {
-  }
+	Error_Handler();
 }
 
 /**
@@ -128,9 +114,7 @@ void PendSV_Handler(void)
 */
 void SVC_Handler(void)
 {
-  while (1)
-  {
-  }
+	Error_Handler();
 }
 
 /**
@@ -140,5 +124,5 @@ void SVC_Handler(void)
 */
 void SysTick_Handler(void)
 {
-  HAL_IncTick();
+	HAL_IncTick();
 }

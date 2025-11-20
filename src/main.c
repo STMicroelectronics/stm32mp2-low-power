@@ -16,14 +16,17 @@
   ******************************************************************************
   */
 
-#include "stm32mp2_lp_fw_api.h"
-#include "stm32mp2xx.h"
+#include <stdio.h>
 #include <stdint.h>
+#include <stm32mp2xx.h>
 #include <stm32mp2xx_hal.h>
-#include <stm32mp2xx_ll_pwr.h>
 #include <stm32mp2xx_hal_ddr.h>
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit.h>
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom.h>
+#include <stm32mp2xx_ll_pwr.h>
+#include <stm32mp2_lp_fw_api.h>
+
+#include <main.h>
 
 #define RIF_CID1	0x1
 #define RIF_CID2	0x2
@@ -59,9 +62,27 @@ struct
 	uint32_t DFSR;
 } scb_cfg  __attribute__((section(".uninit_data")));
 
-void Error_Handler(void)
+/* low level LibC access for project */
+int io_putchar(int ch)
 {
-	while(1);
+	return ch;
+}
+
+int io_getchar(void)
+{
+	uint8_t ch = 0;
+	return ch;
+}
+
+__NO_RETURN void Error_Handler(void)
+{
+	printf("ERROR: system error in low power firmware\r\n");
+#ifndef STM32MP2_LP_HALT_ON_ERROR
+	/* software reset: set SYSRST in RCC Global Reset Control Set Register */
+	WRITE_REG(RCC->GRSTCSETR, RCC_GRSTCSETR_SYSRST_Msk);
+#endif
+	while (true)
+		;
 }
 
 static bool is_cpu1_in_reset(void)

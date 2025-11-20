@@ -35,13 +35,12 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
+#include <main.h>
+
 /* Variables */
 extern int errno;
 #define FreeRTOS
 #define MAX_STACK_SIZE 0x2000
-
-extern int __io_putchar(int ch) __attribute__((weak));
-extern int __io_getchar(void) __attribute__((weak));
 
 register char *stack_ptr __asm("sp");
 
@@ -70,7 +69,7 @@ int _read(int file, char *ptr, int len)
 
   for (DataIdx = 0; DataIdx < len; DataIdx++)
   {
-    *ptr++ = __io_getchar();
+    *ptr++ = io_getchar();
   }
 
   return len;
@@ -82,7 +81,7 @@ int _write(int file, char *ptr, int len)
 
   for (DataIdx = 0; DataIdx < len; DataIdx++)
   {
-    __io_putchar(*ptr++);
+    io_putchar(*ptr++);
   }
   return len;
 }
