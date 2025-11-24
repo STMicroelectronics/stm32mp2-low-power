@@ -18,10 +18,9 @@
   */
 
 #include "stm32mp2_lp_fw_api.h"
-
+#include <stm32mp2xx.h>
 #include <string.h>
 
-#define RETRAM_BASE              0x0E080000U
 #define _RISAF_KEY_SIZE_IN_BYTES (256 / 8)
 #define SHARED_DATA_TFM_LP_MAGIC 0xBAADCAFE
 

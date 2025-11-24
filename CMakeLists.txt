@@ -13,6 +13,13 @@ include(${STM32MP2_LP_TOOLCHAIN_FILE})
 include(stm32cube)
 include(stm32ddrfw_util)
 
+message(STATUS "STM32_SOC_NAME          : ${STM32_SOC_NAME}")
+message(STATUS "STM32_DDR_TYPE          : ${STM32_DDR_TYPE}")
+message(STATUS "STM32_DDR_FREQ          : ${STM32_DDR_FREQ}kHz (${STM32_DDR_FREQ_Mhz}MHz)")
+message(STATUS "STM32_DDR_SIZE          : ${STM32_DDR_SIZE}bytes (${STM32_DDR_SIZE_Gb}Gb)")
+message(STATUS "STM32MP2_LP_RETRAM_BASE : ${STM32MP2_LP_RETRAM_BASE}")
+message(STATUS "STM32MP2_LP_SHARED_DATA : ${STM32MP2_LP_SHARED_DATA}")
+
 #-------------------------------------------------------------------------------
 project(${STM32MP2_LP_TARGET} C ASM)
 
@@ -71,7 +78,8 @@ target_sources(${STM32MP2_LP_TARGET}
 
 target_link_options(${STM32MP2_LP_TARGET}
   PRIVATE
-    -T${STM32MP2_LL_LD_SCRIPT}
+    -T${STM32MP2_LP_LD_SCRIPT}
+    -Wl,--defsym=RETRAM_BASE=${STM32MP2_LP_RETRAM_BASE}
     -Wl,-Map=${STM32MP2_LP_OUT_DIR}/${STM32MP2_LP_OUT_MAP}
     -Wl,--section-start=.shared_data_section=${STM32MP2_LP_SHARED_DATA}
     -Wl,--no-warn-rwx-segments
@@ -85,17 +93,16 @@ target_include_directories(${STM32MP2_LP_TARGET}
 
 target_compile_definitions(${STM32MP2_LP_TARGET}
   PRIVATE
-    ${STM32MP2_LP_CORE}
-    ${STM32MP2_LP_SOC}
+    STM32MP2_LP_FW_SHARED_DATA_SECTION
+    # flag for HAL configuration
+    ${STM32_SOC_NAME}
     CORE_CM33
     STM32_M33TDCID
-    STM32MP2_LP_FW_SHARED_DATA_SECTION
-    # flags for STM32MP257F-EV1
-    DDR_FREQ=1200
-    DDR_SIZE_Gb=32
+    # flag for HAL DDR driver configuration
     STM32MP_DDR_DUAL_AXI_PORT
-    STM32MP_DDR4_TYPE
-    STM32MP257Fxx
+    DDR_FREQ=${STM32_DDR_FREQ_Mhz}
+    DDR_SIZE_Gb=${STM32_DDR_SIZE_Gb}
+    ${STM32_DDR_TYPE}
 )
 
 target_link_libraries(${STM32MP2_LP_TARGET}

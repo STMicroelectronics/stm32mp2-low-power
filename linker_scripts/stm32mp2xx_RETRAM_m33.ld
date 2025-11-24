@@ -16,13 +16,11 @@
   ******************************************************************************
   */
 
-S_BOOT_ALIAS_BASE  = 0x0E000000;
-USED_ALIAS_BASE  = S_BOOT_ALIAS_BASE;
 NSC_SIZE             = 8K;
 MEMORY
 {
-  RETRAM (rwx)      : ORIGIN = USED_ALIAS_BASE + 0x00080000,  LENGTH = 128K
-  RETRAM_APP (rwx)  : ORIGIN = ORIGIN(RETRAM),                LENGTH = LENGTH(RETRAM) - NSC_SIZE
+  RETRAM (rwx)      : ORIGIN = RETRAM_BASE,    LENGTH = 128K
+  RETRAM_APP (rwx)  : ORIGIN = ORIGIN(RETRAM), LENGTH = LENGTH(RETRAM) - NSC_SIZE
 }
 
 MEMORY
