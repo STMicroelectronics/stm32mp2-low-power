@@ -274,10 +274,6 @@ int main(void)
 	uint32_t filtering;
 	uint32_t lpmode;
 
-	userinputbasic.numdbyte = 0x4;
-	userinputbasic.numanib = 0x8;
-	userinputbasic.numpstates = 0x1;
-
 	HAL_DDR_SetRetentionAreaBase((intptr_t) &retreg);
 	if(!stm32mp2_lp_fw_check_data_valid())
 		Error_Handler();
