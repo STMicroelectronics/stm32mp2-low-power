@@ -27,6 +27,7 @@
 #include <stm32mp2_lp_fw_api.h>
 
 #include <main.h>
+#include <version.h>
 
 #define RIF_CID1	0x1
 #define RIF_CID2	0x2
@@ -291,13 +292,26 @@ int main(void)
 	uint32_t filtering;
 	uint32_t lpmode;
 
-	HAL_DDR_SetRetentionAreaBase((intptr_t) &retreg);
-
 	if (!stm32mp2_lp_fw_check_data_valid())
 		Error_Handler();
 
+	HAL_DDR_SetRetentionAreaBase((intptr_t)&retreg);
+
 	if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET) {
+
+		platform_init();
+
+		if (stm32mp2_lp_fw_get_lpmode() == STM32MP2_LP_FW_LPMODE_INIT) {
+			printf("INFO: low power firmware " VERSION_FULLSTR "\r\n");
+
+			ddrphy_phyinit_usercustom_saveretregs();
+
+			return 0;
+		}
+
+		/* temporary: waiting INIT support in TF-M */
 		ddrphy_phyinit_usercustom_saveretregs();
+
 		platform_init();
 
 		/*
@@ -355,6 +369,7 @@ int main(void)
 			/* DDR is now readable/writable */
 		}
 	} else {
+		/* Standby Exit */
 		platform_reinit();
 		HAL_DDR_SR_Exit();
 		/* Re-enable DDRSHR */

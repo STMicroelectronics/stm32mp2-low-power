@@ -31,6 +31,7 @@
  * @STM32MP2_LP_FW_LPMODE_LPLV_STOP2
  * @STM32MP2_LP_FW_LPMODE_STANDBY1
  * @STM32MP2_LP_FW_LPMODE_OFF
+ * @STM32MP2_LP_FW_LPMODE_INIT
  */
 typedef enum stm32mp2_lp_fw_suspend_mode_e {
 	STM32MP2_LP_FW_LPMODE_STOP2 = 0,
@@ -38,6 +39,7 @@ typedef enum stm32mp2_lp_fw_suspend_mode_e {
 	STM32MP2_LP_FW_LPMODE_LPLV_STOP2,
 	STM32MP2_LP_FW_LPMODE_STANDBY1,
 	STM32MP2_LP_FW_LPMODE_OFF,
+	STM32MP2_LP_FW_LPMODE_INIT,
 } stm32mp2_lp_fw_suspend_mode_t;
 
 //Returns the lpmode desired for this lowpower request
