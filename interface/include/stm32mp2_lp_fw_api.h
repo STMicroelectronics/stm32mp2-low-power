@@ -61,6 +61,6 @@ void stm32mp2_lp_fw_get_mkey(uint8_t **mkey, size_t *size);
 bool stm32mp2_lp_fw_set_mkey(uint8_t *mkey, size_t size);
 
 //Execute the low power firmware to reach the suspend mode
-void stm32mp2_lp_fw_exec(void);
+int stm32mp2_lp_fw_exec(void);
 
 #endif//STM32MP2_LP_FW_API

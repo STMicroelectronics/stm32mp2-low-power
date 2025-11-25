@@ -94,14 +94,14 @@ bool stm32mp2_lp_fw_set_mkey(uint8_t *mkey, size_t size)
 	return true;
 }
 
-void stm32mp2_lp_fw_exec(void)
+int stm32mp2_lp_fw_exec(void)
 {
 	/*
-	 * Jump to Reset Handler wit the offset=4 of LP FW Cortex-M33 vector table
-	 * (start firmware , so start of RETRAM)
+	 * Jump to Reset Handler with the offset=4 of LP FW Cortex-M33
+	 * vector table (start firmware, so start of RETRAM)
 	 */
 	void **reset_addr = (void **)(RETRAM_BASE + 4);
-	void (*lp_fw_entry)(void) = *reset_addr;
+	int (*lp_fw_entry)(void) = *reset_addr;
 
-	lp_fw_entry();
+	return lp_fw_entry();
 }
