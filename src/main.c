@@ -24,6 +24,7 @@
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit.h>
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom.h>
 #include <stm32mp2xx_ll_pwr.h>
+#include <stm32mp2xx_ll_usart.h>
 #include <stm32mp2_lp_fw_api.h>
 
 #include <main.h>
@@ -60,9 +61,38 @@ struct {
 	uint32_t DFSR;
 } scb_cfg __section(".uninit_data");
 
+struct {
+	USART_TypeDef *uart;
+	bool enable;
+} uart_cfg __section(".uninit_data");
+
+void uart_init(void)
+{
+	uint32_t uart_dir;
+
+	uart_cfg.enable = false;
+	uart_cfg.uart = (USART_TypeDef *)stm32mp2_lp_fw_get_uart_addr();
+	if (uart_cfg.uart) {
+		/* Check if the transmitter is enabled */
+		uart_dir = LL_USART_GetTransferDirection(uart_cfg.uart);
+		if (uart_dir != LL_USART_DIRECTION_TX &&
+		    uart_dir != LL_USART_DIRECTION_TX_RX) {
+			uart_cfg.uart = NULL;
+		} else {
+			uart_cfg.enable = true;
+		}
+	}
+}
+
 /* low level LibC access for project */
 int io_putchar(int ch)
 {
+	if (uart_cfg.enable && uart_cfg.uart) {
+		while (!LL_USART_IsActiveFlag_TXE_TXFNF(uart_cfg.uart))
+			;
+		LL_USART_TransmitData8(uart_cfg.uart, ch);
+	}
+
 	return ch;
 }
 
@@ -241,6 +271,9 @@ static void SystemClock_Config(void)
 
 static void platform_reinit(void)
 {
+	/* The console uart is lost after Standby */
+	uart_cfg.enable = false;
+
 	/* Mask interrupt (primask seems reset by standby) */
 	__TZ_set_PRIMASK_NS(1);
 	__set_PRIMASK(1);
@@ -256,6 +289,12 @@ static void platform_reinit(void)
 static void platform_init(void)
 {
 	HAL_DDR_SR_SetMode(HAL_DDR_SW_SELF_REFRESH_MODE);
+
+	uart_cfg.enable = false;
+	/* uart initialized and not suspend, i.e. cleared after init */
+	if (uart_cfg.uart && stm32mp2_lp_fw_get_uart_addr())
+		uart_cfg.enable = true;
+
 	save_RISAF4();
 	save_nvic_cfg();
 	save_scb_cfg();
@@ -303,9 +342,8 @@ int main(void)
 
 	if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET) {
 
-		platform_init();
-
 		if (stm32mp2_lp_fw_get_lpmode() == STM32MP2_LP_FW_LPMODE_INIT) {
+			uart_init();
 			printf("INFO: low power firmware " VERSION_FULLSTR "\r\n");
 
 			ddrphy_phyinit_usercustom_saveretregs();

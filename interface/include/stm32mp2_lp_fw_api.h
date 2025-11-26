@@ -65,6 +65,12 @@ void stm32mp2_lp_fw_get_mkey(uint8_t **mkey, size_t *size);
 //Checks if the size passed as args fit with the reserved size for the mkey
 bool stm32mp2_lp_fw_set_mkey(uint8_t *mkey, size_t size);
 
+//set the uart address used for console output
+void stm32mp2_lp_fw_set_uart_addr(uintptr_t addr);
+
+//get the uart address used for console output
+uintptr_t stm32mp2_lp_fw_get_uart_addr(void);
+
 //Execute the low power firmware to reach the suspend mode
 int stm32mp2_lp_fw_exec(void);
 

@@ -28,6 +28,7 @@ struct shared_data_tfm_lp {
 	uint32_t magic;
 	stm32mp2_lp_fw_suspend_mode_t lpmode;
 	uint8_t mkey[_RISAF_KEY_SIZE_IN_BYTES];
+	uintptr_t uart_addr;
 };
 
 #ifndef STM32MP2_LP_FW_SHARED_DATA_SECTION
@@ -98,6 +99,16 @@ bool stm32mp2_lp_fw_set_mkey(uint8_t *mkey, size_t size)
 	memcpy(shared_data_ptr->mkey, mkey, size);
 
 	return true;
+}
+
+void stm32mp2_lp_fw_set_uart_addr(uintptr_t addr)
+{
+	shared_data_ptr->uart_addr = addr;
+}
+
+uintptr_t stm32mp2_lp_fw_get_uart_addr(void)
+{
+	return shared_data_ptr->uart_addr;
 }
 
 int stm32mp2_lp_fw_exec(void)
