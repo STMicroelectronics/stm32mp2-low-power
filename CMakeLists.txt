@@ -107,6 +107,7 @@ target_compile_definitions(${STM32MP2_LP_TARGET}
     # flag for HAL DDR driver configuration
     $<$<BOOL:${STM32MP2_LP_HALT_ON_ERROR}>:STM32MP2_LP_HALT_ON_ERROR>
     STM32MP_DDR_DUAL_AXI_PORT
+    ${STM32MP2_DDR_OPTION}
     DDR_FREQ=${STM32_DDR_FREQ_Mhz}
     DDR_SIZE_Gb=${STM32_DDR_SIZE_Gb}
     ${STM32_DDR_TYPE}
