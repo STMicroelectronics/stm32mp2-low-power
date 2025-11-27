@@ -25,10 +25,10 @@ MEMORY
 
 MEMORY
 {
-  m_text (rx)       : ORIGIN = ORIGIN(RETRAM_APP),                                                     LENGTH = 32K
+  m_text (rx)       : ORIGIN = ORIGIN(RETRAM_APP),                                                     LENGTH = 38K
   m_data (rwx)      : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text),                                    LENGTH = 16K
   m_stack (rwx)     : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data),                   LENGTH = 16K
-  m_remaining (rwx) : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data)+ LENGTH(m_stack),  LENGTH = 56K
+  m_remaining (rwx) : ORIGIN = ORIGIN(RETRAM_APP) + LENGTH(m_text) + LENGTH(m_data)+ LENGTH(m_stack),  LENGTH = 50K
 }
 
 REGION_ALIAS("TEXT", m_text);
