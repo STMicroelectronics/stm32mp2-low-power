@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # The '_VERSION_MANUAL' is used for fallback when Git tags are not available
-set(STM32MP2_LP_VERSION_MANUAL "0.2.0")
+set(STM32MP2_LP_VERSION_MANUAL "0.3.0")
 
 execute_process(COMMAND git describe --tags --always
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
