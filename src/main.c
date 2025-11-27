@@ -334,6 +334,8 @@ int main(void)
 			restore_CPU1CR_access(config, filtering);
 		}
 
+		__HAL_PWR_CLEAR_FLAG();
+
 		if (stm32mp2_lp_fw_get_lpmode() == STM32MP2_LP_FW_LPMODE_STANDBY1) {
 			/* DDR won't be accessible after this point */
 			HAL_DDR_STDBY_SR_Entry();
