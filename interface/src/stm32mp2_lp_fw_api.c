@@ -96,6 +96,8 @@ bool stm32mp2_lp_fw_set_mkey(uint8_t *mkey, size_t size)
 
 int stm32mp2_lp_fw_exec(void)
 {
+	int ret;
+
 	/*
 	 * Jump to Reset Handler with the offset=4 of LP FW Cortex-M33
 	 * vector table (start firmware, so start of RETRAM)
@@ -103,5 +105,10 @@ int stm32mp2_lp_fw_exec(void)
 	void **reset_addr = (void **)(RETRAM_BASE + 4);
 	int (*lp_fw_entry)(void) = *reset_addr;
 
-	return lp_fw_entry();
+	ret = lp_fw_entry();
+
+	/* Clear magic, it is a protection for unexpected firmware execution */
+	shared_data_ptr->magic = 0xDEADBEEF;
+
+	return ret;
 }
