@@ -481,6 +481,31 @@ Reset_Handler:
 
 .end_of_no_sp_and_lr_backup_needed:
 
+/*  Firstly it copies data from read only memory to RAM. There are two schemes
+ *  to copy. One can copy more than one sections. Another can only copy
+ *  one section.  The former scheme needs more instructions and read-only
+ *  data to implement than the latter.
+ *  Macro __STARTUP_COPY_MULTIPLE is used to choose between two schemes.  */
+/*  Single section scheme.
+ *
+ *  The ranges of copy from/to are specified by following symbols
+ *    __etext: LMA of start of the section to copy from. Usually end of text
+ *    __data_start__: VMA of start of the section to copy to
+ *    __data_end__: VMA of end of the section to copy to
+ *
+ *  All addresses must be aligned to 4 bytes boundary.
+ */
+  ldr r1, =__etext
+  ldr r2, =__data_start__
+  ldr r3, =__data_end__
+
+.L_loop1:
+  cmp r2, r3
+  ittt  lt
+  ldrlt r0, [r1], #4
+  strlt r0, [r2], #4
+  blt .L_loop1
+
 /*  This part of work usually is done in C library startup code. Otherwise,
  *  define this macro to enable it in this startup.
  *

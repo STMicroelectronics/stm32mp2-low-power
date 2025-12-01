@@ -56,6 +56,26 @@ SECTIONS
     KEEP(*(.init))
     KEEP(*(.fini))
 
+    . = ALIGN(4);
+    /* preinit data */
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP(*(.preinit_array))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
+
+    . = ALIGN(4);
+    /* init data */
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP(*(SORT(.init_array.*)))
+    KEEP(*(.init_array))
+    PROVIDE_HIDDEN (__init_array_end = .);
+
+    . = ALIGN(4);
+    /* finit data */
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP(*(SORT(.fini_array.*)))
+    KEEP(*(.fini_array))
+    PROVIDE_HIDDEN (__fini_array_end = .);
+
     /* .ctors */
     *crtbegin.o(.ctors)
     *crtbegin?.o(.ctors)
@@ -87,75 +107,22 @@ SECTIONS
   } > TEXT
   __exidx_end = .;
 
-  /* To copy multiple ROM to RAM sections,
-   * uncomment .copy.table section and,
-   * define __STARTUP_COPY_MULTIPLE in startup_ARMCMx.S */
-  /*
-  .copy.table :
-  {
-    . = ALIGN(4);
-    __copy_table_start__ = .;
-    LONG (__etext)
-    LONG (__data_start__)
-    LONG (__data_end__ - __data_start__)
-    __copy_table_end__ = .;
-  } > TEXT
-  */
-
-  /* To clear multiple BSS sections,
-   * uncomment .zero.table section and,
-   * define __STARTUP_CLEAR_BSS_MULTIPLE in startup_ARMCMx.S */
-  /*
-  .zero.table :
-  {
-    . = ALIGN(4);
-    __zero_table_start__ = .;
-    LONG (__bss_start__)
-    LONG (__bss_end__ - __bss_start__)
-    __zero_table_end__ = .;
-  } > TEXT
-  */
-
-  __etext = .;
-
   .FWDDR : {
       FW_DDR_START = .;
       KEEP(*stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.o (.data))
   } > TEXT
 
-  .data :
+  /* Used by the startup to initialize data */
+  __etext = ALIGN(4);
+  .data : AT (__etext)
   {
     __data_start__ = .;
     *(vtable)
     *(.data*)
+    KEEP(*(.jcr*))
     . = ALIGN(4);
     /* All data end */
     __data_end__ = .;
-  } > DATA
-
-  .init_data :
-  {
-    /* preinit data */
-    PROVIDE_HIDDEN (__preinit_array_start = .);
-    KEEP(*(.preinit_array))
-    PROVIDE_HIDDEN (__preinit_array_end = .);
-
-    . = ALIGN(4);
-    /* init data */
-    PROVIDE_HIDDEN (__init_array_start = .);
-    KEEP(*(SORT(.init_array.*)))
-    KEEP(*(.init_array))
-    PROVIDE_HIDDEN (__init_array_end = .);
-
-    . = ALIGN(4);
-    /* finit data */
-    PROVIDE_HIDDEN (__fini_array_start = .);
-    KEEP(*(SORT(.fini_array.*)))
-    KEEP(*(.fini_array))
-    PROVIDE_HIDDEN (__fini_array_end = .);
-
-    KEEP(*(.jcr*))
-    . = ALIGN(4);
   } > DATA
 
   .uninit_data :
