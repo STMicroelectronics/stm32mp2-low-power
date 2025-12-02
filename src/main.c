@@ -351,9 +351,6 @@ int main(void)
 			return 0;
 		}
 
-		/* temporary: waiting INIT support in TF-M */
-		ddrphy_phyinit_usercustom_saveretregs();
-
 		platform_init();
 
 		/*
