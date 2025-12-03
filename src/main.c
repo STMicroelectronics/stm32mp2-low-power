@@ -23,6 +23,7 @@
 #include <stm32mp2xx_hal_ddr.h>
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit.h>
 #include <stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom.h>
+#include <stm32mp2xx_ll_exti.h>
 #include <stm32mp2xx_ll_pwr.h>
 #include <stm32mp2xx_ll_usart.h>
 #include <stm32mp2_lp_fw_api.h>
@@ -65,6 +66,206 @@ struct {
 	USART_TypeDef *uart;
 	bool enable;
 } uart_cfg __section(".uninit_data");
+
+struct {
+	uint32_t EXTI1_C2IMR1;
+	uint32_t EXTI1_C2IMR2;
+	uint32_t EXTI1_C2IMR3;
+	uint32_t EXTI2_C2IMR1;
+	uint32_t EXTI2_C2IMR2;
+	uint32_t EXTI2_C2IMR3;
+	uint32_t exti1_ciden[3];
+	uint32_t exti2_ciden[3];
+} exti_cfg __section(".uninit_data");
+
+struct {
+	uint32_t ciden;
+	uint32_t irq_en;
+} rtc_cfg __section(".uninit_data");
+
+/*
+ * Bitfield of EXTI interruption for the CPU1 wakeup to copy on CPU2 wakeup
+ * 1 for each "reserved" interruption or for each wake-up interruption
+ * not for both CPU1 and CPU2 (i.e. when copy is not allowed)
+ */
+#if defined(STM32MP21xxxx)
+const uint32_t exti1_rsvd_mask[3] = {
+	GENMASK_32(25, 24) | BIT(20),
+	GENMASK_32(63 - 32, 58 - 32) | GENMASK_32(51 - 32, 49 - 32) |
+	GENMASK_32(46 - 32, 45 - 32) | BIT(42 - 32) |
+	GENMASK_32(35 - 32, 33 - 32),
+	GENMASK_32(95 - 64, 77 - 64) | BIT(73 - 64) | BIT(71 - 64) |
+	GENMASK_32(67 - 64, 64 - 64),
+};
+
+const uint32_t exti2_rsvd_mask[3] = {
+	GENMASK_32(24, 27) | GENMASK_32(25, 16),
+	GENMASK_32(62 - 32, 53 - 32) | GENMASK_32(50 - 32, 38 - 32) |
+	BIT(36 - 32) | GENMASK_32(34 - 32, 32 - 32),
+	GENMASK_32(95 - 64, 64 - 64),
+};
+#endif
+#if defined(STM32MP23xxxx) || defined(STM32MP25xxxx)
+const uint32_t exti1_rsvd_mask[3] = {
+	BIT(20),
+	GENMASK_32(63 - 32, 58 - 32) | BIT(51 - 32) | BIT(35 - 32),
+	GENMASK_32(95 - 64, 85 - 64) | GENMASK_32(82 - 64, 77 - 64) |
+	BIT(73 - 64) | BIT(71 - 64) | BIT(69 - 64) |
+	GENMASK_32(67 - 64, 64 - 64),};
+
+const uint32_t exti2_rsvd_mask[3] = {
+	BIT(28) | GENMASK_32(24, 16),
+	GENMASK_32(63 - 32, 62 - 32) | GENMASK_32(60 - 32, 52 - 32) |
+	BIT(49 - 32) |  BIT(47 - 32) | GENMASK_32(45 - 32, 34 - 32) |
+	BIT(32 - 32),
+	GENMASK_32(95 - 64, 77 - 64) | GENMASK_32(75 - 64, 71 - 64) |
+	GENMASK_32(69 - 64, 66 - 64),};
+#endif
+
+static bool exti_is_allowed(const uint32_t *rsv, uint8_t intr)
+{
+	uint8_t i = intr / 32;
+	uint32_t mask = BIT(intr % 32);
+
+	return (rsv[i] & mask) == 0;
+}
+
+static void wakeup_configure(void)
+{
+	bool exti1_c1_filtering = false;
+	bool exti2_c1_filtering = false;
+	uint8_t i, j;
+	uint32_t mask;
+	uint32_t val;
+
+	exti_cfg.EXTI1_C2IMR1 = READ_REG(EXTI1_S->C2IMR1);
+	exti_cfg.EXTI1_C2IMR2 = READ_REG(EXTI1_S->C2IMR2);
+	exti_cfg.EXTI1_C2IMR3 = READ_REG(EXTI1_S->C2IMR3);
+
+	exti_cfg.EXTI2_C2IMR1 = READ_REG(EXTI2_S->C2IMR1);
+	exti_cfg.EXTI2_C2IMR2 = READ_REG(EXTI2_S->C2IMR2);
+	exti_cfg.EXTI2_C2IMR3 = READ_REG(EXTI2_S->C2IMR3);
+
+	if (LL_EXTI_IsEnabledC1ProcessorCidFiltering(EXTI1_S)) {
+		LL_EXTI_DisableC1ProcessorCidFiltering(EXTI1_S);
+		exti1_c1_filtering = true;
+	}
+	if (LL_EXTI_IsEnabledC1ProcessorCidFiltering(EXTI2_S)) {
+		LL_EXTI_DisableC1ProcessorCidFiltering(EXTI2_S);
+		exti2_c1_filtering = true;
+	}
+
+	for (i = 0; i < 3; i++) {
+		exti_cfg.exti1_ciden[i] = 0;
+		exti_cfg.exti2_ciden[i] = 0;
+	}
+	for (i = 0; i < 96; i++) {
+		j = i / 32;
+		mask = BIT(i % 32);
+		if (LL_EXTI_IsEnabledEventCidFiltering(EXTI1_S, i)) {
+			LL_EXTI_DisableEventCidFiltering(EXTI1_S, i);
+			exti_cfg.exti1_ciden[j] |= mask;
+		}
+		if (LL_EXTI_IsEnabledEventCidFiltering(EXTI2_S, i)) {
+			LL_EXTI_DisableEventCidFiltering(EXTI2_S, i);
+			exti_cfg.exti2_ciden[j] |= mask;
+		}
+	}
+	/* Add CPU1 wakeup for CPU2, as CPU1 is in hold boot */
+	SET_BIT(EXTI1_S->C2IMR1, READ_REG(EXTI1_S->C1IMR1) & ~exti1_rsvd_mask[0]);
+	SET_BIT(EXTI1_S->C2IMR2, READ_REG(EXTI1_S->C1IMR2) & ~exti1_rsvd_mask[1]);
+	SET_BIT(EXTI1_S->C2IMR3, READ_REG(EXTI1_S->C1IMR3) & ~exti1_rsvd_mask[2]);
+	SET_BIT(EXTI2_S->C2IMR1, READ_REG(EXTI2_S->C1IMR1) & ~exti2_rsvd_mask[0]);
+	SET_BIT(EXTI2_S->C2IMR2, READ_REG(EXTI2_S->C1IMR2) & ~exti2_rsvd_mask[1]);
+	SET_BIT(EXTI2_S->C2IMR3, READ_REG(EXTI2_S->C1IMR3) & ~exti2_rsvd_mask[2]);
+
+	/* Manage specific wake-up interrupt only for CPU1 */
+	/* 17: RTC NS CPU1 => 19: RTC NS CPU2 */
+	if (READ_REG(EXTI2_S->C1IMR1) & BIT(17))
+		SET_BIT(EXTI2_S->C2IMR1, BIT(19));
+	/* 22: RTC S CPU1  => 24: RTC S CPU2 */
+	if (READ_REG(EXTI2_S->C1IMR1) & BIT(22))
+		SET_BIT(EXTI2_S->C2IMR1, BIT(24));
+
+	/* restore EXTI CID filtering */
+	if (exti1_c1_filtering)
+		LL_EXTI_EnableC1ProcessorCidFiltering(EXTI1_S);
+	if (exti2_c1_filtering)
+		LL_EXTI_EnableC1ProcessorCidFiltering(EXTI2_S);
+
+	/*
+	 * Disable CID filtering in RTC for each interruption:
+	 * enable the interrupt request for CPU2 even if for CPU1 assigned IT
+	 */
+	rtc_cfg.ciden = 0;
+	rtc_cfg.irq_en = 0;
+	for (i = 0; i < 6; i++) {
+		val = READ_REG(RTC->RCIDCFGR[i]);
+		if (val & RTC_RCIDCFGR_CFEN) {
+			rtc_cfg.ciden |= BIT(i);
+			WRITE_REG(RTC->RCIDCFGR[i], val & ~RTC_RCIDCFGR_CFEN);
+		}
+	}
+	if (!NVIC_GetEnableIRQ(RTC_S_IRQn)) {
+		NVIC_EnableIRQ(RTC_S_IRQn);
+		rtc_cfg.irq_en |= BIT(0);
+	}
+	if (!NVIC_GetEnableIRQ(RTC_IRQn)) {
+		NVIC_EnableIRQ(RTC_IRQn);
+		rtc_cfg.irq_en |= BIT(1);
+	}
+
+	/* Enable RCC wakup interrupt */
+	LL_RCC_ClearFlag_WKUP();
+	LL_RCC_EnableIT_WKUP();
+	NVIC_ClearPendingIRQ(RCC_WAKEUP_IRQn);
+	NVIC_EnableIRQ(RCC_WAKEUP_IRQn);
+	NVIC_SetPriority(RCC_WAKEUP_IRQn, 0);
+}
+
+static void wakeup_restore(void)
+{
+	uint8_t i, j;
+	uint32_t mask;
+
+	/* Restore saved IMR values */
+	WRITE_REG(EXTI1_S->C2IMR1, exti_cfg.EXTI1_C2IMR1);
+	WRITE_REG(EXTI1_S->C2IMR2, exti_cfg.EXTI1_C2IMR2);
+	WRITE_REG(EXTI1_S->C2IMR3, exti_cfg.EXTI1_C2IMR3);
+	WRITE_REG(EXTI2_S->C2IMR1, exti_cfg.EXTI2_C2IMR1);
+	WRITE_REG(EXTI2_S->C2IMR2, exti_cfg.EXTI2_C2IMR2);
+	WRITE_REG(EXTI2_S->C2IMR3, exti_cfg.EXTI2_C2IMR3);
+
+	/* Restore RIF configuration: enable CIDEN when disabled */
+	for (i = 0; i < 96; i++) {
+		j = i / 32;
+		mask = BIT(i % 32);
+		if (exti_is_allowed(exti1_rsvd_mask, i) &&
+		    (exti_cfg.exti1_ciden[j] & mask))
+			LL_EXTI_EnableEventCidFiltering(EXTI1_S, i);
+		if (exti_is_allowed(exti2_rsvd_mask, i) &&
+		    (exti_cfg.exti1_ciden[j] & mask))
+			LL_EXTI_EnableEventCidFiltering(EXTI2_S, i);
+	}
+
+	/* Restore RTC CID filtering */
+	for (i = 0; i < 6; i++) {
+		if (rtc_cfg.ciden & BIT(i)) {
+			SET_BIT(RTC->RCIDCFGR[i], RTC_RCIDCFGR_CFEN);
+		}
+	}
+	/* Restore RTC IRQ in NVIC */
+	if (rtc_cfg.irq_en & BIT(0))
+		NVIC_DisableIRQ(RTC_S_IRQn);
+	if (rtc_cfg.irq_en & BIT(1))
+		NVIC_DisableIRQ(RTC_IRQn);
+
+	/* Disable RCC wakup interrupt */
+	NVIC_DisableIRQ(RCC_WAKEUP_IRQn);
+	NVIC_ClearPendingIRQ(RCC_WAKEUP_IRQn);
+	LL_RCC_DisableIT_WKUP();
+	LL_RCC_ClearFlag_WKUP();
+}
 
 void uart_init(void)
 {
@@ -298,6 +499,12 @@ static void platform_init(void)
 	save_RISAF4();
 	save_nvic_cfg();
 	save_scb_cfg();
+	wakeup_configure();
+}
+
+static void platform_restore(void)
+{
+	wakeup_restore();
 }
 
 static void save_CPU1CR_access(uint32_t *config, uint32_t *filtering)
@@ -405,6 +612,8 @@ int main(void)
 				Error_Handler();
 			}
 			HAL_PWR_EnterSTOPMode(lpmode, PWR_STOPENTRY_WFI);
+
+			platform_restore();
 
 			if (HAL_DDR_SR_Exit() != HAL_OK) {
 				printf("[LP FW] Error DDR failed to get out of self-refresh\r\n");
