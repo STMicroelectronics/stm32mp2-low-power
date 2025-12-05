@@ -45,7 +45,7 @@ struct {
 	uint32_t ISER[16U];
 	uint32_t ITNS[16U];
 	uint8_t  IPR[496U];
-} nvic_cfg  __section(".uninit_data");
+} nvic_cfg __section(".uninit_data");
 
 struct {
 	uint32_t ICSR;
@@ -58,7 +58,7 @@ struct {
 	uint32_t CFSR;
 	uint32_t HFSR;
 	uint32_t DFSR;
-} scb_cfg  __section(".uninit_data");
+} scb_cfg __section(".uninit_data");
 
 /* low level LibC access for project */
 int io_putchar(int ch)
