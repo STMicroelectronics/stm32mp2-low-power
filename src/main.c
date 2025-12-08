@@ -255,6 +255,7 @@ static void platform_reinit(void)
 
 static void platform_init(void)
 {
+	HAL_DDR_SR_SetMode(HAL_DDR_SW_SELF_REFRESH_MODE);
 	save_RISAF4();
 	save_nvic_cfg();
 	save_scb_cfg();
