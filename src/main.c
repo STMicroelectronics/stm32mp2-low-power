@@ -295,7 +295,10 @@ int main(void)
 	if (!stm32mp2_lp_fw_check_data_valid())
 		Error_Handler();
 
-	HAL_DDR_SetRetentionAreaBase((intptr_t)&retreg);
+	if (HAL_DDR_SetRetentionAreaBase((intptr_t)&retreg) != HAL_OK) {
+		printf("[LP FW] Error failed to set retention area base\r\n");
+		Error_Handler();
+	}
 
 	if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET) {
 
@@ -338,7 +341,10 @@ int main(void)
 
 		if (stm32mp2_lp_fw_get_lpmode() == STM32MP2_LP_FW_LPMODE_STANDBY1) {
 			/* DDR won't be accessible after this point */
-			HAL_DDR_STDBY_SR_Entry();
+			if (HAL_DDR_STDBY_SR_Entry() != HAL_OK) {
+				printf("[LP FW] Error failed to set DDR in self-refresh for standby\r\n");
+				Error_Handler();
+			}
 			/* Disable DDRSHR to avoid STOP/STANDBY exit issue */
 			CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 			HAL_PWREx_EnableRetRamContentStandbyRetention(PWR_RETENTION_RAM_SUPPLY_ON_STDBY_VBAT);
@@ -346,7 +352,10 @@ int main(void)
 			/* We should never go this far in the LP-firmware ! */
 			Error_Handler();
 		} else {
-			HAL_DDR_SR_Entry(NULL);
+			if (HAL_DDR_SR_Entry(NULL) != HAL_OK) {
+				printf("[LP FW] Error failed to set DDR in self-refresh\r\n");
+				Error_Handler();
+			}
 			/* Disable DDRSHR to avoid STOP/STANDBY exit issue */
 			CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 
@@ -367,13 +376,19 @@ int main(void)
 
 			/* Re-enable DDRSHR */
 			SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
-			HAL_DDR_SR_Exit();
+			if (HAL_DDR_SR_Exit() != HAL_OK) {
+				printf("[LP FW] Error DDR failed to get out of self-refresh\r\n");
+				Error_Handler();
+			}
 			/* DDR is now readable/writable */
 		}
 	} else {
 		/* Standby Exit */
 		platform_reinit();
-		HAL_DDR_SR_Exit();
+		if (HAL_DDR_SR_Exit() != HAL_OK) {
+			printf("[LP FW] Error DDR failed to get out of self-refresh\r\n");
+			Error_Handler();
+		}
 		/* Re-enable DDRSHR */
 		SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 	}
