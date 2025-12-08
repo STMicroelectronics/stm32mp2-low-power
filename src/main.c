@@ -346,8 +346,6 @@ int main(void)
 				printf("[LP FW] Error failed to set DDR in self-refresh for standby\r\n");
 				Error_Handler();
 			}
-			/* Disable DDRSHR to avoid STOP/STANDBY exit issue */
-			CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 			HAL_PWREx_EnableRetRamContentStandbyRetention(PWR_RETENTION_RAM_SUPPLY_ON_STDBY_VBAT);
 			HAL_PWR_EnterSTANDBYMode(PWR_STANDBY_1);
 			/* We should never go this far in the LP-firmware ! */
@@ -357,8 +355,6 @@ int main(void)
 				printf("[LP FW] Error failed to set DDR in self-refresh\r\n");
 				Error_Handler();
 			}
-			/* Disable DDRSHR to avoid STOP/STANDBY exit issue */
-			CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 
 			switch (stm32mp2_lp_fw_get_lpmode()) {
 			case STM32MP2_LP_FW_LPMODE_STOP2:
@@ -375,8 +371,6 @@ int main(void)
 			}
 			HAL_PWR_EnterSTOPMode(lpmode, PWR_STOPENTRY_WFI);
 
-			/* Re-enable DDRSHR */
-			SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 			if (HAL_DDR_SR_Exit() != HAL_OK) {
 				printf("[LP FW] Error DDR failed to get out of self-refresh\r\n");
 				Error_Handler();
@@ -390,8 +384,6 @@ int main(void)
 			printf("[LP FW] Error DDR failed to get out of self-refresh\r\n");
 			Error_Handler();
 		}
-		/* Re-enable DDRSHR */
-		SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRSHR);
 	}
 
 	return 0;
