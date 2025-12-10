@@ -50,6 +50,12 @@ void stm32mp2_lp_fw_set_lpmode(stm32mp2_lp_fw_suspend_mode_t lpmode)
 	shared_data_ptr->lpmode = lpmode;
 }
 
+// Clear the shared data struct
+void stm32mp2_lp_fw_clear_data(void)
+{
+	memset(shared_data_ptr, 0, sizeof(*shared_data_ptr));
+}
+
 // Set the magic within the shared data struct to ensure that the data are ready to use
 void stm32mp2_lp_fw_mark_data_valid(void)
 {

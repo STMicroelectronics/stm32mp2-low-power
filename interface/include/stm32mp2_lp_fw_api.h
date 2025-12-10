@@ -48,7 +48,10 @@ stm32mp2_lp_fw_suspend_mode_t stm32mp2_lp_fw_get_lpmode(void);
 //set the lpmode desired for this lowpower request
 void stm32mp2_lp_fw_set_lpmode(stm32mp2_lp_fw_suspend_mode_t lpmode);
 
-//set the magic within the sahred data struct to ensure that the data are ready to use
+//clear the shared data struct
+void stm32mp2_lp_fw_clear_data(void);
+
+//set the magic within the shared data struct to ensure that the data are ready to use
 void stm32mp2_lp_fw_mark_data_valid(void);
 
 //test the magic within the shared data struct to ensure that the data are ready to use
