@@ -163,11 +163,19 @@ static void wakeup_configure(void)
 		j = i / 32;
 		mask = BIT(i % 32);
 		if (LL_EXTI_IsEnabledEventCidFiltering(EXTI1_S, i)) {
-			LL_EXTI_DisableEventCidFiltering(EXTI1_S, i);
+			/*
+			 * temporary to avoid LL bug - Ticket 223774
+			 * LL_EXTI_DisableEventCidFiltering(EXTI1_S, i);
+			 */
+			CLEAR_BIT(EXTI1_S->ECIDCFGR[i], EXTI_EnCIDCFGR_CFEN);
 			exti_cfg.exti1_ciden[j] |= mask;
 		}
 		if (LL_EXTI_IsEnabledEventCidFiltering(EXTI2_S, i)) {
-			LL_EXTI_DisableEventCidFiltering(EXTI2_S, i);
+			/*
+			 * temporary to avoid LL bug - Ticket 223774
+			 * LL_EXTI_DisableEventCidFiltering(EXTI2_S, i);
+			*/
+			CLEAR_BIT(EXTI2_S->ECIDCFGR[i], EXTI_EnCIDCFGR_CFEN);
 			exti_cfg.exti2_ciden[j] |= mask;
 		}
 	}
