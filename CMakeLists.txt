@@ -10,7 +10,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(config_base)
 include(${STM32MP2_LP_TOOLCHAIN_FILE})
-include(stm32cube)
+include(stm32cube_cmsis_core)
+include(stm32cube_cmsis_device)
+include(stm32cube_hal)
 include(stm32ddrfw_util)
 include(stm32mp2_lp_version)
 
@@ -32,7 +34,7 @@ endif()
 
 add_executable(${STM32MP2_LP_TARGET})
 
-set(STM32MP2_LP_CUBE_HAL    ${STM32MP2_LP_CUBE_PATH}/Drivers/STM32MP2xx_HAL_Driver)
+set(STM32MP2_LP_CUBE_HAL    ${STM32MP2_LP_HAL_PATH}/Src)
 set(STM32MP2_LP_DDR_HAL     ${STM32MP2_LP_DDRFW_UTIL_PATH}/Drivers/STM32MP2xx_HAL_Driver/)
 set(STM32MP2_LP_INC_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/interface/include/)
 set(STM32MP2_LP_SRC_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/interface/src/)
@@ -44,13 +46,13 @@ target_sources(${STM32MP2_LP_TARGET}
     ${STM32MP2_LP_SRC_DIR}/syscalls.c
     ${STM32MP2_LP_SRC_DIR}/stm32mp2xx_it.c
     ${STM32MP2_LP_SRC_DIR}/system_stm32mp2xx.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_cortex.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_gpio.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_pwr.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_pwr_ex.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_rcc.c
-    ${STM32MP2_LP_CUBE_HAL}/Src/stm32mp2xx_hal_rcc_ex.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_cortex.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_gpio.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_pwr.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_pwr_ex.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_rcc.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_rcc_ex.c
 
     ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.c
     ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_calcmb.c
@@ -115,7 +117,9 @@ target_compile_definitions(${STM32MP2_LP_TARGET}
 
 target_link_libraries(${STM32MP2_LP_TARGET}
   PRIVATE
-    stm32cube::header
+    stm32cube_cmsis_core::header
+    stm32cube_cmsis_device::header
+    stm32cube_hal::header
     stm32ddrfw_util::header
     ${STM32MP2_LP_TARGET}_api
 )

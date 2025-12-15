@@ -8,9 +8,17 @@ set(CROSS_COMPILE               arm-none-eabi     CACHE STRING    "Cross-compila
 set(STM32MP2_LP_TOOLCHAIN_FILE  toolchain_GNUARM  CACHE FILEPATH  "Path to stm32mp2_low_power compiler toolchain file")
 
 #Cube repository
-set(STM32MP2_LP_CUBE_GIT_REMOTE "https://github.com/STMicroelectronics/STM32CubeMP2.git" CACHE STRING "URL (or path) to retrieve stm32cubemp2 package")
-set(STM32MP2_LP_CUBE_VERSION    "v1.2.0"          CACHE STRING  "version of stm32cubemp2 package")
-set(STM32MP2_LP_CUBE_PATH       "download"        CACHE PATH  "Path to stm32cubemp2 (or DOWNLOAD to fetch automatically)")
+set(STM32MP2_LP_HAL_GIT_REMOTE   "https://github.com/STMicroelectronics/stm32mp2xx-hal-driver.git" CACHE STRING "URL (or path) to retrieve stm32mp2xx-hal-driver package")
+set(STM32MP2_LP_HAL_VERSION      "v1.2.0"          CACHE STRING  "version of stm32mp2xx-hal-driver package")
+set(STM32MP2_LP_HAL_PATH         "download"        CACHE PATH  "Path to stm32mp2xx-hal-driver (or DOWNLOAD to fetch automatically)")
+
+set(STM32MP2_LP_CMSIS_DEVICE_GIT_REMOTE "https://github.com/STMicroelectronics/cmsis-device-mp2.git" CACHE STRING "URL (or path) to retrieve cmsis-device-mp2 package")
+set(STM32MP2_LP_CMSIS_DEVICE_VERSION    "v1.2.0"          CACHE STRING  "version of cmsis-device-mp2 package")
+set(STM32MP2_LP_CMSIS_DEVICE_PATH       "download"        CACHE PATH  "Path to cmsis-device-mp2: STM32CubeMP2 CMSIS Device MPU (or DOWNLOAD to fetch automatically)")
+
+set(STM32MP2_LP_CMSIS_CORE_GIT_REMOTE "https://github.com/STMicroelectronics/cmsis-core.git" CACHE STRING "URL (or path) to retrieve cmsis-core package")
+set(STM32MP2_LP_CMSIS_CORE_VERSION    "v5.9.0"          CACHE STRING  "version of cmsis-core package")
+set(STM32MP2_LP_CMSIS_CORE_PATH       "download"        CACHE PATH  "Path to cmsis-core (or DOWNLOAD to fetch automatically)")
 
 #DDRFW Util repository
 set(STM32MP2_LP_DDRFW_UTIL_GIT_REMOTE "https://github.com/STMicroelectronics/STM32DDRFW-UTIL.git" CACHE STRING "URL (or path) to retrieve stm32ddr fw util package")
