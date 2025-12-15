@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # The '_VERSION_MANUAL' is used for fallback when Git tags are not available
-set(STM32MP2_LP_VERSION_MANUAL "0.4.0")
+set(STM32MP2_LP_VERSION_MANUAL "0.5.0")
 
 find_package(Git)
 if(Git_FOUND)
