@@ -597,6 +597,7 @@ int main(void)
 				Error_Handler();
 			}
 			HAL_PWREx_EnableRetRamContentStandbyRetention(PWR_RETENTION_RAM_SUPPLY_ON_STDBY_VBAT);
+			__DSB();
 			HAL_PWR_EnterSTANDBYMode(PWR_STANDBY_1);
 			/* We should never go this far in the LP-firmware ! */
 			Error_Handler();
@@ -619,6 +620,7 @@ int main(void)
 			default:
 				Error_Handler();
 			}
+			__DSB();
 			HAL_PWR_EnterSTOPMode(lpmode, PWR_STOPENTRY_WFI);
 
 			platform_restore();
