@@ -9,24 +9,19 @@ set(STM32MP2_LP_TOOLCHAIN_FILE  toolchain_GNUARM  CACHE FILEPATH  "Path to stm32
 
 #STM32Cube repository
 set(STM32MP2XX_HAL_DRIVER_GIT_REMOTE "https://github.com/STMicroelectronics/stm32mp2xx-hal-driver.git" CACHE STRING "URL (or path) to retrieve stm32mp2xx-hal-driver package")
-set(STM32MP2XX_HAL_DRIVER_VERSION    "v1.2.0"          CACHE STRING  "version of stm32mp2xx-hal-driver package")
+set(STM32MP2XX_HAL_DRIVER_VERSION    "v1.3.0"          CACHE STRING  "version of stm32mp2xx-hal-driver package")
 set(STM32MP2XX_HAL_DRIVER_PATH       "download"        CACHE PATH  "Path to stm32mp2xx-hal-driver (or DOWNLOAD to fetch automatically)")
 
 set(CMSIS_DEVICE_MP2_GIT_REMOTE      "https://github.com/STMicroelectronics/cmsis-device-mp2.git" CACHE STRING "URL (or path) to retrieve cmsis-device-mp2 package")
-set(CMSIS_DEVICE_MP2_VERSION         "v1.2.0"          CACHE STRING  "version of cmsis-device-mp2 package")
+set(CMSIS_DEVICE_MP2_VERSION         "v1.3.0"          CACHE STRING  "version of cmsis-device-mp2 package")
 set(CMSIS_DEVICE_MP2_PATH            "download"        CACHE PATH  "Path to cmsis-device-mp2: STM32CubeMP2 CMSIS Device MPU (or DOWNLOAD to fetch automatically)")
 
 set(CMSIS_CORE_GIT_REMOTE            "https://github.com/STMicroelectronics/cmsis-core.git" CACHE STRING "URL (or path) to retrieve cmsis-core package")
 set(CMSIS_CORE_VERSION               "v5.9.0"          CACHE STRING  "version of cmsis-core package")
 set(CMSIS_CORE_PATH                  "download"        CACHE PATH  "Path to cmsis-core (or DOWNLOAD to fetch automatically)")
 
-#DDRFW Util repository
-set(STM32MP2_LP_DDRFW_UTIL_GIT_REMOTE "https://github.com/STMicroelectronics/STM32DDRFW-UTIL.git" CACHE STRING "URL (or path) to retrieve stm32ddr fw util package")
-set(STM32MP2_LP_DDRFW_UTIL_VERSION    "1.3.0"          CACHE STRING  "version of stm32ddr fw util package")
-set(STM32MP2_LP_DDRFW_UTIL_PATH       "download"       CACHE PATH    "Path to stm32cubemp2 (or DOWNLOAD to fetch automatically)")
-set(STM32MP2_LP_TARGET          stm32mp2_lp_fw    CACHE STRING  "target name of stm32mp2 low power")
-
 #output
+set(STM32MP2_LP_TARGET          stm32mp2_lp_fw                  CACHE STRING  "target name of stm32mp2 low power")
 set(STM32MP2_LP_OUT_DIR         ${CMAKE_CURRENT_BINARY_DIR}/bin CACHE PATH  "stm32mp2 low power output dir")
 set(STM32MP2_LP_OUT_BIN         ${STM32MP2_LP_TARGET}.bin       CACHE PATH  "stm32mp2 low power output binary")
 set(STM32MP2_LP_OUT_MAP         ${STM32MP2_LP_TARGET}.map       CACHE PATH  "stm32mp2 low power output map")

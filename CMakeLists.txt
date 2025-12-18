@@ -13,7 +13,6 @@ include(${STM32MP2_LP_TOOLCHAIN_FILE})
 include(cmsis_core)
 include(cmsis_device_mp2)
 include(stm32mp2xx_hal_driver)
-include(stm32ddrfw_util)
 include(stm32mp2_lp_version)
 
 message(STATUS "STM32_SOC_NAME          : ${STM32_SOC_NAME}")
@@ -35,7 +34,6 @@ endif()
 add_executable(${STM32MP2_LP_TARGET})
 
 set(STM32MP2_LP_CUBE_HAL    ${STM32MP2XX_HAL_DRIVER_PATH}/Src)
-set(STM32MP2_LP_DDR_HAL     ${STM32MP2_LP_DDRFW_UTIL_PATH}/Drivers/STM32MP2xx_HAL_Driver/)
 set(STM32MP2_LP_INC_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/interface/include/)
 set(STM32MP2_LP_SRC_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/interface/src/)
 
@@ -48,35 +46,34 @@ target_sources(${STM32MP2_LP_TARGET}
     ${STM32MP2_LP_SRC_DIR}/system_stm32mp2xx.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_cortex.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_calcmb.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_c_initphyconfig.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_d_loadimem.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_f_loaddmem.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_g_execfw.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_globals.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_i_loadpieimage.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_initstruct.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_isdbytedisabled.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_loadpieprodcode.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_mapdrvstren.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_progcsrskiptrain.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_reginterface.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_restore_sequence.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_sequence.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_softsetmb.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_customposttrain.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_custompretrain.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_g_waitfwdone.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_saveretregs.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr_ddrphy_phyinit_writeoutmem.c
+    ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_ddr.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_gpio.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_pwr.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_pwr_ex.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_rcc.c
     ${STM32MP2_LP_CUBE_HAL}/stm32mp2xx_hal_rcc_ex.c
-
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_calcmb.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_c_initphyconfig.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_d_loadimem.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_f_loaddmem.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_g_execfw.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_globals.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_i_loadpieimage.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_initstruct.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_isdbytedisabled.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_loadpieprodcode.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_mapdrvstren.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_progcsrskiptrain.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_reginterface.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_restore_sequence.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_sequence.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_softsetmb.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_customposttrain.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_custompretrain.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_g_waitfwdone.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_usercustom_saveretregs.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr_ddrphy_phyinit_writeoutmem.c
-    ${STM32MP2_LP_DDR_HAL}/Src/stm32mp2xx_hal_ddr.c
 )
 
 target_link_options(${STM32MP2_LP_TARGET}
@@ -120,7 +117,6 @@ target_link_libraries(${STM32MP2_LP_TARGET}
     cmsis_core::header
     cmsis_device_mp2::header
     stm32mp2xx_hal_driver::header
-    stm32ddrfw_util::header
     ${STM32MP2_LP_TARGET}_api
 )
 
